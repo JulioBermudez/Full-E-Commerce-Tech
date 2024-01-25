@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { withSwal } from "react-sweetalert2";
 
-function Categories({swal}) {
+function Categories({ swal }) {
   const [editedCategory, setEditedCategory] = useState(null);
   const [name, setName] = useState("");
   const [parentCategory, setParentCategory] = useState("");
@@ -37,20 +37,21 @@ function Categories({swal}) {
   function deleteCategory(category) {
     swal
       .fire({
-        title: "Example",
-        text: "Hello World",
-        didOpen: () => {
-          // run when swal is opened...
-        },
-        didClose: () => {
-          // run when swal is closed...
-        },
+        title: "Are you sure?",
+        text: `Do you want to delete ${category.name}?`,
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Yes, Delete!",
+        reverseButtons: true,
+        confirmButtonColor: "#d55",
       })
-      .then((result) => {
+      .then(async (result) => {
         // when confirmed and promise resolved...
-      })
-      .catch((error) => {
-        // when promise rejected...
+        if (result.isConfirmed) {
+          const { _id } = category;
+          await axios.delete("/api/categories?_id=" + _id);
+          fetchCategories();
+        }
       });
   }
   return (
